@@ -48,7 +48,7 @@ export const useMetaverseStore = create<MetaverseStore>((set, get) => ({
     
     set({
       properties: properties.map((p) =>
-        p.id === propertyId ? { ...p, owner: wallet.address, isForSale: false } : p
+        p.id === propertyId ? { ...p, owner: wallet.address, isForSale: false, status: 'Sold' as const } : p
       ),
       wallet: {
         ...wallet,

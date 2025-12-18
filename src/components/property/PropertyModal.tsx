@@ -21,6 +21,13 @@ export const PropertyModal = () => {
     commercial: 'bg-primary/20 text-primary border-primary/30',
     mixed: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
     landmark: 'bg-accent/20 text-accent border-accent/30',
+    plot: 'bg-green-500/20 text-green-400 border-green-500/30',
+  };
+
+  const statusColors: Record<string, string> = {
+    Available: 'bg-green-500/20 text-green-400 border-green-500/30',
+    Sold: 'bg-red-500/20 text-red-400 border-red-500/30',
+    Reserved: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
   };
 
   return (
@@ -59,23 +66,20 @@ export const PropertyModal = () => {
                 <Badge className={buildingTypeColors[selectedProperty.buildingType]}>
                   {selectedProperty.buildingType}
                 </Badge>
-                {selectedProperty.isForSale && (
-                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                    For Sale
-                  </Badge>
-                )}
+                <Badge className={statusColors[selectedProperty.status]}>
+                  {selectedProperty.status}
+                </Badge>
               </div>
 
               <p className="text-muted-foreground mb-6">{selectedProperty.description}</p>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div className="glass-card p-4 text-center">
-                  <span className="text-3xl font-display gradient-text-gold">
-                    {selectedProperty.priceInSol}
+                  <span className="text-2xl font-display gradient-text-gold">
+                    PKR {selectedProperty.priceInPKR}
                   </span>
-                  <span className="text-sm text-muted-foreground ml-1">SOL</span>
                   <p className="text-xs text-muted-foreground mt-1">
-                    ${selectedProperty.price.toLocaleString()}
+                    {selectedProperty.priceInSol} SOL
                   </p>
                 </div>
                 <div className="glass-card p-4 text-center">
@@ -113,7 +117,7 @@ export const PropertyModal = () => {
               )}
 
               <div className="flex gap-3">
-                {selectedProperty.isForSale && (
+                {selectedProperty.status === 'Available' && selectedProperty.isForSale && (
                   <Button
                     variant="glow"
                     className="flex-1"
@@ -124,15 +128,27 @@ export const PropertyModal = () => {
                     {isWalletConnected ? 'Purchase Property' : 'Connect Wallet to Buy'}
                   </Button>
                 )}
-                <Button variant="outline" className="flex-1">
-                  <TrendingUp className="w-4 h-4" />
-                  Buy Shares
-                </Button>
+                {selectedProperty.status === 'Available' && (
+                  <Button variant="outline" className="flex-1">
+                    <TrendingUp className="w-4 h-4" />
+                    Buy Shares
+                  </Button>
+                )}
+                {selectedProperty.status === 'Sold' && (
+                  <div className="flex-1 text-center py-2">
+                    <Badge className={statusColors.Sold}>Property Sold</Badge>
+                  </div>
+                )}
+                {selectedProperty.status === 'Reserved' && (
+                  <div className="flex-1 text-center py-2">
+                    <Badge className={statusColors.Reserved}>Property Reserved</Badge>
+                  </div>
+                )}
               </div>
 
               <Button variant="ghost" className="w-full mt-3 gap-2">
                 <ExternalLink className="w-4 h-4" />
-                View on Solana Explorer
+                View on Blockchain Explorer
               </Button>
             </div>
           </motion.div>

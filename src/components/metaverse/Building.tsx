@@ -28,6 +28,15 @@ export const Building = ({ property }: BuildingProps) => {
     selectProperty(property);
   };
 
+  const getStatusColor = () => {
+    switch (property.status) {
+      case 'Available': return '#22c55e';
+      case 'Sold': return '#ef4444';
+      case 'Reserved': return '#f59e0b';
+      default: return '#22c55e';
+    }
+  };
+
   const getBuildingGeometry = () => {
     switch (property.buildingType) {
       case 'landmark':
@@ -39,7 +48,7 @@ export const Building = ({ property }: BuildingProps) => {
             </mesh>
             <mesh position={[0, property.size.height * 0.1, 0]}>
               <coneGeometry args={[property.size.width / 2, property.size.height / 3, 8]} />
-              <meshStandardMaterial color={property.color} metalness={0.6} roughness={0.1} emissive={property.color} emissiveIntensity={0.2} />
+              <meshStandardMaterial color={property.color} metalness={0.6} roughness={0.1} emissive={property.color} emissiveIntensity={0.15} />
             </mesh>
           </group>
         );
@@ -52,7 +61,20 @@ export const Building = ({ property }: BuildingProps) => {
               metalness={0.7} 
               roughness={0.1}
               emissive={property.color}
-              emissiveIntensity={hovered ? 0.3 : 0.1}
+              emissiveIntensity={hovered ? 0.2 : 0.08}
+            />
+          </mesh>
+        );
+      case 'plot':
+        return (
+          <mesh>
+            <boxGeometry args={[property.size.width, property.size.height, property.size.depth]} />
+            <meshStandardMaterial 
+              color={property.color} 
+              metalness={0.2} 
+              roughness={0.6}
+              emissive={property.color}
+              emissiveIntensity={hovered ? 0.15 : 0.03}
             />
           </mesh>
         );
@@ -65,7 +87,7 @@ export const Building = ({ property }: BuildingProps) => {
               metalness={0.4} 
               roughness={0.3}
               emissive={property.color}
-              emissiveIntensity={hovered ? 0.2 : 0.05}
+              emissiveIntensity={hovered ? 0.15 : 0.04}
             />
           </mesh>
         );
@@ -85,57 +107,93 @@ export const Building = ({ property }: BuildingProps) => {
         {getBuildingGeometry()}
         
         {/* Building windows effect */}
-        <mesh position={[0, 0, property.size.depth / 2 + 0.01]}>
-          <planeGeometry args={[property.size.width * 0.8, property.size.height * 0.8]} />
-          <meshStandardMaterial 
-            color="#1a1a2e" 
-            metalness={0.9} 
-            roughness={0.1}
-            transparent
-            opacity={0.6}
-          />
-        </mesh>
+        {property.buildingType !== 'plot' && (
+          <mesh position={[0, 0, property.size.depth / 2 + 0.01]}>
+            <planeGeometry args={[property.size.width * 0.8, property.size.height * 0.8]} />
+            <meshStandardMaterial 
+              color="#1a1a2e" 
+              metalness={0.9} 
+              roughness={0.1}
+              transparent
+              opacity={0.6}
+            />
+          </mesh>
+        )}
 
         {/* Glowing edges when hovered */}
         {hovered && (
           <lineSegments>
             <edgesGeometry args={[new THREE.BoxGeometry(property.size.width + 0.2, property.size.height + 0.2, property.size.depth + 0.2)]} />
-            <lineBasicMaterial color="#00d4aa" linewidth={2} />
+            <lineBasicMaterial color="#2dd4bf" linewidth={2} />
           </lineSegments>
         )}
       </group>
 
-      {/* Floating name label */}
-      <Text
-        position={[0, property.size.height / 2 + 1.5, 0]}
-        fontSize={0.8}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="bottom"
-      >
-        {property.name}
-      </Text>
+      {/* Floating label with area name, price, and status */}
+      <group position={[0, property.size.height / 2 + 2, 0]}>
+        {/* Area Name */}
+        <Text
+          position={[0, 1.2, 0]}
+          fontSize={0.7}
+          color="#ffffff"
+          anchorX="center"
+          anchorY="bottom"
+          font="/fonts/inter-bold.woff"
+        >
+          {property.areaName}
+        </Text>
+        
+        {/* Price in PKR */}
+        <Text
+          position={[0, 0.4, 0]}
+          fontSize={0.55}
+          color="#d4af37"
+          anchorX="center"
+          anchorY="bottom"
+        >
+          PKR {property.priceInPKR}
+        </Text>
+        
+        {/* Status */}
+        <Text
+          position={[0, -0.3, 0]}
+          fontSize={0.45}
+          color={getStatusColor()}
+          anchorX="center"
+          anchorY="bottom"
+        >
+          {property.status}
+        </Text>
+      </group>
 
       {/* Property info card on hover */}
       {hovered && (
         <Html
-          position={[0, property.size.height / 2 + 3, 0]}
+          position={[0, property.size.height / 2 + 5, 0]}
           center
           distanceFactor={15}
           style={{ pointerEvents: 'none' }}
         >
-          <div className="glass-card p-4 min-w-[200px] text-center animate-fade-in">
+          <div className="glass-card p-4 min-w-[220px] text-center animate-fade-in">
             <h3 className="font-display text-primary text-lg">{property.name}</h3>
             <p className="text-muted-foreground text-sm">{property.location}</p>
-            <div className="mt-2 flex items-center justify-center gap-2">
-              <span className="text-accent font-bold">{property.priceInSol} SOL</span>
-              <span className="text-xs text-muted-foreground">
-                (${property.price.toLocaleString()})
+            <div className="mt-2">
+              <span className="text-accent font-bold text-lg">PKR {property.priceInPKR}</span>
+            </div>
+            <div className="mt-1 flex items-center justify-center gap-2">
+              <span 
+                className="px-2 py-0.5 rounded text-xs font-medium"
+                style={{ 
+                  backgroundColor: `${getStatusColor()}20`,
+                  color: getStatusColor()
+                }}
+              >
+                {property.status}
+              </span>
+              <span className="text-xs text-muted-foreground capitalize">
+                {property.buildingType}
               </span>
             </div>
-            {property.owner && (
-              <p className="text-xs text-secondary mt-1">Owned: {property.owner}</p>
-            )}
             <p className="text-xs text-primary mt-2">Click to view details</p>
           </div>
         </Html>

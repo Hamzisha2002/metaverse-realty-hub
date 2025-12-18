@@ -3,17 +3,20 @@ export interface Property {
   name: string;
   description: string;
   price: number;
+  priceInPKR: string;
   priceInSol: number;
   location: string;
+  areaName: string;
   coordinates: { x: number; y: number; z: number };
   size: { width: number; height: number; depth: number };
-  buildingType: 'residential' | 'commercial' | 'mixed' | 'landmark';
+  buildingType: 'residential' | 'commercial' | 'mixed' | 'landmark' | 'plot';
   color: string;
   owner: string | null;
   fractionalShares: number;
   totalShares: number;
   image?: string;
   isForSale: boolean;
+  status: 'Available' | 'Sold' | 'Reserved';
   features: string[];
 }
 

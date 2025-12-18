@@ -6,13 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 const Properties = () => {
-  const { properties, selectProperty, isWalletConnected } = useMetaverseStore();
+  const { properties, selectProperty } = useMetaverseStore();
 
   const buildingTypeColors: Record<string, string> = {
     residential: 'bg-secondary/20 text-secondary border-secondary/30',
     commercial: 'bg-primary/20 text-primary border-primary/30',
     mixed: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
     landmark: 'bg-accent/20 text-accent border-accent/30',
+    plot: 'bg-green-500/20 text-green-400 border-green-500/30',
+  };
+
+  const statusColors: Record<string, string> = {
+    Available: 'bg-green-500/20 text-green-400 border-green-500/30',
+    Sold: 'bg-red-500/20 text-red-400 border-red-500/30',
+    Reserved: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
   };
 
   return (
@@ -26,12 +33,12 @@ const Properties = () => {
           className="mb-12"
         >
           <h1 className="font-display text-4xl font-bold mb-4">
-            <span className="gradient-text-primary">Property</span>{' '}
-            <span className="text-foreground">Marketplace</span>
+            <span className="gradient-text-primary">Karachi</span>{' '}
+            <span className="text-foreground">Properties</span>
           </h1>
           <p className="text-muted-foreground max-w-2xl">
-            Browse and invest in premium virtual real estate. Each property is a unique NFT 
-            on the Solana blockchain with full ownership rights.
+            Browse and invest in premium Karachi real estate. Each property is tokenized 
+            on the blockchain with full ownership rights.
           </p>
         </motion.div>
 
@@ -42,7 +49,7 @@ const Properties = () => {
           transition={{ delay: 0.2 }}
           className="flex flex-wrap gap-2 mb-8"
         >
-          {['All', 'Commercial', 'Residential', 'Mixed', 'Landmark'].map((filter) => (
+          {['All', 'Residential', 'Commercial', 'Plot', 'Available', 'Sold'].map((filter) => (
             <Button
               key={filter}
               variant={filter === 'All' ? 'default' : 'outline'}
@@ -80,11 +87,11 @@ const Properties = () => {
                   <Badge className={buildingTypeColors[property.buildingType]}>
                     {property.buildingType}
                   </Badge>
-                  {property.isForSale && (
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                      For Sale
-                    </Badge>
-                  )}
+                </div>
+                <div className="absolute top-4 left-4">
+                  <Badge className={statusColors[property.status]}>
+                    {property.status}
+                  </Badge>
                 </div>
               </div>
 
@@ -103,11 +110,10 @@ const Properties = () => {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <span className="font-display text-2xl gradient-text-gold">
-                      {property.priceInSol}
+                      {property.priceInPKR}
                     </span>
-                    <span className="text-muted-foreground text-sm ml-1">SOL</span>
                     <p className="text-xs text-muted-foreground">
-                      ${property.price.toLocaleString()}
+                      {property.priceInSol} SOL
                     </p>
                   </div>
                   <div className="text-right">

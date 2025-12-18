@@ -10,7 +10,7 @@ const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
 ];
 
-export const Navbar = () => {
+export const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
   const location = useLocation();
 
   return (
@@ -18,7 +18,9 @@ export const Navbar = () => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
+      className={`fixed top-0 left-0 right-0 z-50 ${
+        transparent ? 'bg-background/30' : 'glass-card'
+      } border-b border-border/50 backdrop-blur-xl`}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
@@ -27,10 +29,10 @@ export const Navbar = () => {
           </div>
           <div className="flex flex-col">
             <span className="font-display text-lg font-bold gradient-text-primary">
-              MetaEstate
+              RealtyOneX
             </span>
             <span className="text-xs text-muted-foreground -mt-1">
-              Blockchain Real Estate
+              Pakistan's Metaverse Real Estate
             </span>
           </div>
         </Link>

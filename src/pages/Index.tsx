@@ -3,17 +3,18 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Building2, Coins, Shield, Users, Zap, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
+import { MetaverseScene } from '@/components/metaverse/MetaverseScene';
 
 const features = [
   {
     icon: Building2,
-    title: 'Virtual Real Estate',
-    description: 'Own prime digital land in our immersive metaverse city',
+    title: 'Karachi Properties',
+    description: 'Own prime digital land representing real Karachi real estate',
   },
   {
     icon: Coins,
     title: 'NFT Tokenization',
-    description: 'Every property is a unique NFT on the Solana blockchain',
+    description: 'Every property is a unique NFT on the blockchain',
   },
   {
     icon: Users,
@@ -28,7 +29,7 @@ const features = [
   {
     icon: Zap,
     title: 'Instant Settlement',
-    description: 'Lightning-fast transactions on Solana network',
+    description: 'Lightning-fast transactions on blockchain network',
   },
   {
     icon: Globe,
@@ -38,27 +39,27 @@ const features = [
 ];
 
 const stats = [
-  { value: '$12.5M', label: 'Total Volume' },
-  { value: '2,847', label: 'Properties Sold' },
+  { value: 'PKR 50Cr+', label: 'Total Volume' },
+  { value: '2,847', label: 'Properties Listed' },
   { value: '15,200+', label: 'Active Users' },
   { value: '99.9%', label: 'Uptime' },
 ];
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background grid-pattern">
-      <Navbar />
+    <div className="min-h-screen bg-background relative">
+      <Navbar transparent />
       
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-secondary/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-accent/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+      {/* Hero Section with 3D Background */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* 3D Metaverse Background */}
+        <div className="absolute inset-0 z-0">
+          <MetaverseScene isBackground />
+          {/* Gradient overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/90" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10 pt-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,18 +73,15 @@ const Index = () => {
               className="inline-flex items-center gap-2 px-4 py-2 glass-card mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-sm text-muted-foreground">Powered by Solana Blockchain</span>
+              <span className="text-sm text-muted-foreground">Pakistan's Decentralized Metaverse Real Estate Platform</span>
             </motion.div>
 
             <h1 className="font-display text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="gradient-text-primary">Immersive</span>
-              <br />
-              <span className="text-foreground">Blockchain Real Estate</span>
+              <span className="gradient-text-primary">RealtyOneX</span>
             </h1>
 
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Own, trade, and explore tokenized properties in our Decentraland-inspired 
-              metaverse. Experience the future of real estate investment.
+              Own, explore, and invest in Karachi's tokenized real estate — inside the metaverse
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -94,8 +92,8 @@ const Index = () => {
                 </Button>
               </Link>
               <Link to="/properties">
-                <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto">
-                  Browse Properties
+                <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto bg-background/50 backdrop-blur-sm">
+                  Explore Karachi Properties
                 </Button>
               </Link>
             </div>
@@ -130,7 +128,7 @@ const Index = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
         >
           <div className="flex flex-col items-center gap-2">
             <span className="text-xs text-muted-foreground">Scroll to explore</span>
@@ -146,7 +144,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 relative">
+      <section className="py-24 relative grid-pattern">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
@@ -156,7 +154,7 @@ const Index = () => {
           >
             <h2 className="font-display text-4xl font-bold mb-4">
               <span className="gradient-text-primary">Why Choose</span>{' '}
-              <span className="text-foreground">MetaEstate?</span>
+              <span className="text-foreground">RealtyOneX?</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Experience the next generation of real estate investment with blockchain security
@@ -200,10 +198,10 @@ const Index = () => {
             className="glass-card-glow p-12 text-center max-w-4xl mx-auto"
           >
             <h2 className="font-display text-4xl font-bold mb-4 text-foreground">
-              Ready to Own Your Piece of the Metaverse?
+              Ready to Invest in Karachi's Digital Future?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-              Connect your wallet and start exploring premium virtual real estate opportunities today.
+              Connect your wallet and start exploring premium virtual real estate opportunities in Pakistan today.
             </p>
             <Link to="/metaverse">
               <Button variant="glow" size="xl" className="gap-2">
@@ -219,7 +217,7 @@ const Index = () => {
       <footer className="border-t border-border py-8">
         <div className="container mx-auto px-4 text-center">
           <p className="text-muted-foreground text-sm">
-            © 2024 MetaEstate. Final Year Project - Blockchain Real Estate Tokenization System
+            © 2024 RealtyOneX. Final Year Project - Pakistan's Decentralized Metaverse Real Estate Platform
           </p>
         </div>
       </footer>

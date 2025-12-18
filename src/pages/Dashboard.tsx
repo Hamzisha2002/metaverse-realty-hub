@@ -25,6 +25,16 @@ const Dashboard = () => {
     ...fractionalHoldings.map((fh) => (fh.price / fh.totalShares) * fh.shares),
   ].reduce((a, b) => a + b, 0);
 
+  const formatPKR = (value: number) => {
+    if (value >= 10000000) {
+      return `${(value / 10000000).toFixed(1)} Cr`;
+    }
+    if (value >= 100000) {
+      return `${(value / 100000).toFixed(1)} Lac`;
+    }
+    return value.toLocaleString();
+  };
+
   if (!isWalletConnected) {
     return (
       <div className="min-h-screen bg-background grid-pattern">
@@ -40,8 +50,8 @@ const Dashboard = () => {
               Connect Your Wallet
             </h1>
             <p className="text-muted-foreground mb-8">
-              Connect your Solana wallet to view your property portfolio, track investments,
-              and manage your virtual real estate.
+              Connect your wallet to view your property portfolio, track investments,
+              and manage your Karachi real estate holdings.
             </p>
             <Button variant="glow" size="lg" onClick={() => useMetaverseStore.getState().connectWallet()}>
               Connect Wallet
@@ -121,7 +131,7 @@ const Dashboard = () => {
               <span className="text-muted-foreground">Portfolio Value</span>
             </div>
             <div className="font-display text-3xl gradient-text-gold">
-              ${totalPortfolioValue.toLocaleString()}
+              PKR {formatPKR(totalPortfolioValue)}
             </div>
           </div>
         </motion.div>
@@ -156,7 +166,7 @@ const Dashboard = () => {
                       <p className="text-sm text-muted-foreground">{property.location}</p>
                       <div className="mt-2">
                         <span className="font-display gradient-text-gold">
-                          {property.priceInSol} SOL
+                          PKR {property.priceInPKR}
                         </span>
                       </div>
                     </div>
@@ -236,7 +246,7 @@ const Dashboard = () => {
                       </td>
                       <td className="p-4 text-right">
                         <span className="gradient-text-gold font-display">
-                          ${((holding.price / holding.totalShares) * holding.shares).toLocaleString()}
+                          PKR {formatPKR((holding.price / holding.totalShares) * holding.shares)}
                         </span>
                       </td>
                     </tr>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Building2, Coins, Shield, Users, Zap, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
+import { BackgroundVideo } from '@/components/background/BackgroundVideo';
 import { ParticleTextBackground } from '@/components/background/ParticleTextBackground';
 import { ParticleText3D } from '@/components/text/ParticleText3D';
 
@@ -53,6 +54,9 @@ const Index = () => {
       
       {/* Hero Section with Subtle Background */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Video - Lowest Layer */}
+        <BackgroundVideo />
+        
         {/* Three.js Particle Animation Background - Decorative Only */}
         <ParticleTextBackground />
         

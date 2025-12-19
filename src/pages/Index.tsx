@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Building2, Coins, Shield, Users, Zap, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
-import { MetaverseScene } from '@/components/metaverse/MetaverseScene';
+import { ParticleTextBackground } from '@/components/background/ParticleTextBackground';
+import { ParticleText3D } from '@/components/text/ParticleText3D';
 
 const features = [
   {
     icon: Building2,
-    title: 'Karachi Properties',
-    description: 'Own prime digital land representing real Karachi real estate',
+    title: ' Properties',
+    description: 'Own prime digital land representing  real estate',
   },
   {
     icon: Coins,
@@ -50,14 +51,13 @@ const Index = () => {
     <div className="min-h-screen bg-background relative">
       <Navbar transparent />
       
-      {/* Hero Section with 3D Background */}
+      {/* Hero Section with Subtle Background */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* 3D Metaverse Background */}
-        <div className="absolute inset-0 z-0">
-          <MetaverseScene isBackground />
-          {/* Gradient overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/90" />
-        </div>
+        {/* Three.js Particle Animation Background - Decorative Only */}
+        <ParticleTextBackground />
+        
+        {/* Strong dark overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/85 to-background/95 z-[5]" />
 
         <div className="container mx-auto px-4 relative z-10 pt-16">
           <motion.div
@@ -70,31 +70,55 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 glass-card mb-6"
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.3 }
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 glass-card mb-6 hover:border-primary/30 transition-colors duration-300 cursor-default"
             >
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-sm text-muted-foreground">Pakistan's Decentralized Metaverse Real Estate Platform</span>
+              <span className="text-sm text-muted-foreground"> Decentralized Metaverse Real Estate Platform</span>
             </motion.div>
 
-            <h1 className="font-display text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="gradient-text-primary">RealtyOneX</span>
-            </h1>
+            {/* PRIMARY TITLE - Three.js Particle Text */}
+            <div className="relative h-32 md:h-40 mb-6">
+              <ParticleText3D />
+              {/* Hidden HTML for accessibility */}
+              <h1 className="sr-only">RealtyOneX</h1>
+            </div>
 
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Own, explore, and invest in Karachi's tokenized real estate — inside the metaverse
+              Own, explore, and invest in tokenized real estate  inside the metaverse
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/metaverse">
-                <Button variant="glow" size="xl" className="gap-2 w-full sm:w-auto">
-                  Enter Metaverse
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Button variant="glow" size="xl" className="gap-2 w-full sm:w-auto">
+                    Enter Metaverse
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <ArrowRight className="w-5 h-5" />
+                    </motion.div>
+                  </Button>
+                </motion.div>
               </Link>
               <Link to="/properties">
-                <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto bg-background/50 backdrop-blur-sm">
-                  Explore Karachi Properties
-                </Button>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto bg-background/50 backdrop-blur-sm hover:bg-background/70 hover:border-primary/50 transition-all duration-300">
+                    Explore  Properties
+                  </Button>
+                </motion.div>
               </Link>
             </div>
           </motion.div>
@@ -112,7 +136,12 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
-                className="glass-card p-6 text-center"
+                whileHover={{ 
+                  y: -8, 
+                  scale: 1.05,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+                className="glass-card p-6 text-center cursor-pointer hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300"
               >
                 <div className="font-display text-3xl font-bold gradient-text-gold">
                   {stat.value}
@@ -172,15 +201,23 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="glass-card p-6 group hover:border-primary/50 transition-all duration-300"
+                  whileHover={{ 
+                    y: -10, 
+                    scale: 1.02,
+                    transition: { duration: 0.3, ease: "easeOut" }
+                  }}
+                  className="glass-card p-6 group hover:border-primary/50 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-primary/10"
                 >
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                    <Icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold text-foreground mb-2">
+                  <motion.div 
+                    className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors"
+                    whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
+                  >
+                    <Icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
+                  </motion.div>
+                  <h3 className="font-display text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  <p className="text-muted-foreground text-sm">{feature.description}</p>
+                  <p className="text-muted-foreground text-sm group-hover:text-foreground/80 transition-colors duration-300">{feature.description}</p>
                 </motion.div>
               );
             })}
@@ -195,19 +232,34 @@ const Index = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="glass-card-glow p-12 text-center max-w-4xl mx-auto"
+            whileHover={{ 
+              scale: 1.02,
+              transition: { duration: 0.4, ease: "easeOut" }
+            }}
+            className="glass-card-glow p-12 text-center max-w-4xl mx-auto cursor-pointer hover:shadow-2xl hover:shadow-primary/30 transition-shadow duration-500"
           >
             <h2 className="font-display text-4xl font-bold mb-4 text-foreground">
-              Ready to Invest in Karachi's Digital Future?
+              Ready to Invest in  Digital Future?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-              Connect your wallet and start exploring premium virtual real estate opportunities in Pakistan today.
+              Connect your wallet and start exploring premium virtual real estate opportunities today.
             </p>
             <Link to="/metaverse">
-              <Button variant="glow" size="xl" className="gap-2">
-                Start Exploring
-                <ArrowRight className="w-5 h-5" />
-              </Button>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Button variant="glow" size="xl" className="gap-2">
+                  Start Exploring
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.div>
+                </Button>
+              </motion.div>
             </Link>
           </motion.div>
         </div>
@@ -217,7 +269,7 @@ const Index = () => {
       <footer className="border-t border-border py-8">
         <div className="container mx-auto px-4 text-center">
           <p className="text-muted-foreground text-sm">
-            © 2024 RealtyOneX. Final Year Project - Pakistan's Decentralized Metaverse Real Estate Platform
+            © 2025 RealtyOneX.  -  Decentralized Metaverse Real Estate Platform
           </p>
         </div>
       </footer>

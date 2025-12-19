@@ -51,7 +51,7 @@ const Dashboard = () => {
             </h1>
             <p className="text-muted-foreground mb-8">
               Connect your wallet to view your property portfolio, track investments,
-              and manage your Karachi real estate holdings.
+              and manage your  real estate holdings.
             </p>
             <Button variant="glow" size="lg" onClick={() => useMetaverseStore.getState().connectWallet()}>
               Connect Wallet

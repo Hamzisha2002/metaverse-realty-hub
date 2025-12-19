@@ -37,7 +37,7 @@ const Properties = () => {
             <span className="text-foreground">Properties</span>
           </h1>
           <p className="text-muted-foreground max-w-2xl">
-            Browse and invest in premium Karachi real estate. Each property is tokenized 
+            Browse and invest in premium  real estate. Each property is tokenized 
             on the blockchain with full ownership rights.
           </p>
         </motion.div>

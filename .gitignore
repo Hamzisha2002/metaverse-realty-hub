@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Nested/duplicate directories
+metaverse-realty-hub/
+metaverse-realty-hub-/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -5,6 +5,7 @@ import { Building2, Coins, PieChart, TrendingUp, Wallet, ExternalLink } from 'lu
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { properties } from '@/data/properties';
+import { DashboardBackgroundVideo } from '@/components/background/DashboardBackgroundVideo';
 
 const Dashboard = () => {
   const { isWalletConnected, wallet } = useMetaverseStore();
@@ -37,9 +38,12 @@ const Dashboard = () => {
 
   if (!isWalletConnected) {
     return (
-      <div className="min-h-screen bg-background grid-pattern">
+      <div className="min-h-screen bg-background grid-pattern relative overflow-hidden">
+        {/* Background Video */}
+        <DashboardBackgroundVideo />
+        
         <Navbar />
-        <main className="container mx-auto px-4 pt-24 pb-12">
+        <main className="container mx-auto px-4 pt-24 pb-12 relative z-[2]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -63,10 +67,13 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background grid-pattern">
+    <div className="min-h-screen bg-background grid-pattern relative overflow-hidden">
+      {/* Background Video */}
+      <DashboardBackgroundVideo />
+      
       <Navbar />
       
-      <main className="container mx-auto px-4 pt-24 pb-12">
+      <main className="container mx-auto px-4 pt-24 pb-12 relative z-[2]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

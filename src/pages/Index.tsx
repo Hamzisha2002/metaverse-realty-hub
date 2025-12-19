@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
 import { BackgroundVideo } from '@/components/background/BackgroundVideo';
 import { ParticleTextBackground } from '@/components/background/ParticleTextBackground';
+import { WhyChooseBackgroundVideo } from '@/components/background/WhyChooseBackgroundVideo';
 import { ParticleText3D } from '@/components/text/ParticleText3D';
 
 const features = [
@@ -88,7 +89,7 @@ const Index = () => {
             <div className="relative h-32 md:h-40 mb-6">
               <ParticleText3D />
               {/* Hidden HTML for accessibility */}
-              <h1 className="sr-only">RealtyOneX</h1>
+              <h1 className="sr-only">RealityOneX</h1>
             </div>
 
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -177,8 +178,11 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 relative grid-pattern">
-        <div className="container mx-auto px-4">
+      <section className="py-24 relative grid-pattern overflow-hidden">
+        {/* Background Video for Why Choose Section */}
+        <WhyChooseBackgroundVideo />
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -187,7 +191,7 @@ const Index = () => {
           >
             <h2 className="font-display text-4xl font-bold mb-4">
               <span className="gradient-text-primary">Why Choose</span>{' '}
-              <span className="text-foreground">RealtyOneX?</span>
+              <span className="text-foreground">RealityOneX?</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Experience the next generation of real estate investment with blockchain security
@@ -273,7 +277,7 @@ const Index = () => {
       <footer className="border-t border-border py-8">
         <div className="container mx-auto px-4 text-center">
           <p className="text-muted-foreground text-sm">
-            © 2025 RealtyOneX.  -  Decentralized Metaverse Real Estate Platform
+            © 2025 RealityOneX.  -  Decentralized Metaverse Real Estate Platform
           </p>
         </div>
       </footer>

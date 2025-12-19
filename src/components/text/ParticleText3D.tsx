@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Text } from 'troika-three-text';
 
 /**
  * ParticleText3D Component (Now using TroikaText for stability)
  * 
- * Renders "REALTYONEX" as clean, readable 3D text using TroikaText.
+ * Renders "REALITYONEX" as clean, readable 3D text using TroikaText.
  * 
  * WHY TROIKA OVER PARTICLE SYSTEM:
  * - TroikaText uses proper font rendering (no manual pixel sampling)
@@ -26,6 +26,7 @@ export const ParticleText3D = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0.5, y: 0.5, isHovering: false });
   const scrollRef = useRef(0);
+  const [textReady, setTextReady] = useState(false);
   
   // Three.js refs
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -102,7 +103,7 @@ export const ParticleText3D = () => {
       textMesh.visible = true;
       
       // Text content and font
-      textMesh.text = 'REALTYONEX';
+      textMesh.text = 'REALITYONEX';
       textMesh.fontSize = 15;
       textMesh.font = 'Arial, sans-serif';
       textMesh.fontWeight = 'bold';
@@ -143,6 +144,8 @@ export const ParticleText3D = () => {
         if (rendererRef.current && sceneRef.current && cameraRef.current) {
           rendererRef.current.render(sceneRef.current, cameraRef.current);
         }
+        // Mark text as ready for fade-in
+        setTextReady(true);
       });
       
       console.log('✅ TroikaText created and added to scene');
@@ -291,8 +294,15 @@ export const ParticleText3D = () => {
   }, []);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Three.js canvas - FULLY TRANSPARENT */}
+    <div 
+      style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '100%',
+        backgroundColor: 'transparent', // Match hero section - no white background
+      }}
+    >
+      {/* Three.js canvas - FADE IN ON LOAD */}
       <div
         ref={containerRef}
         style={{
@@ -308,11 +318,13 @@ export const ParticleText3D = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'transparent', // Prevent white background
+          backgroundColor: 'transparent', // Match hero section background
+          opacity: textReady ? 1 : 0, // Fade in when ready
+          transition: 'opacity 0.4s ease-out', // Smooth fade-in
         }}
       />
 
-      {/* Fallback HTML text - VISIBLE until 3D loads */}
+      {/* Fallback HTML text - FADES OUT when 3D text is ready */}
       <div
         style={{
           position: 'absolute',
@@ -325,18 +337,18 @@ export const ParticleText3D = () => {
           textShadow: '0 0 20px #00ffff, 0 0 40px #00aaaa, 0 0 60px #008888',
           letterSpacing: '0.15em',
           zIndex: 49,
-          opacity: 1, // VISIBLE as safety fallback
+          opacity: textReady ? 0 : 1, // Fade out when 3D text is ready
           pointerEvents: 'none',
           whiteSpace: 'nowrap',
-          transition: 'opacity 0.5s ease-out',
+          transition: 'opacity 0.4s ease-out', // Smooth fade-out
         }}
         className="hero-text-fallback"
       >
-        REALTYONEX
+        REALITYONEX
       </div>
 
       {/* Hidden text for SEO and accessibility */}
-      <h1 className="sr-only">RealtyOneX</h1>
+      <h1 className="sr-only">RealityOneX</h1>
     </div>
   );
 };

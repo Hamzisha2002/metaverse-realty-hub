@@ -6,6 +6,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { BackgroundVideo } from '@/components/background/BackgroundVideo';
 import { ParticleTextBackground } from '@/components/background/ParticleTextBackground';
 import { WhyChooseBackgroundVideo } from '@/components/background/WhyChooseBackgroundVideo';
+import { ReadyInvestBackgroundVideo } from '@/components/background/ReadyInvestBackgroundVideo';
 import { ParticleText3D } from '@/components/text/ParticleText3D';
 
 const features = [
@@ -234,8 +235,11 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative">
-        <div className="container mx-auto px-4">
+      <section className="py-24 relative overflow-hidden">
+        {/* Background Video for CTA Section */}
+        <ReadyInvestBackgroundVideo />
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}

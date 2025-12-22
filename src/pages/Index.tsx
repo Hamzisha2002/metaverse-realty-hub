@@ -1,13 +1,22 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Building2, Coins, Shield, Users, Zap, Globe } from 'lucide-react';
+import { ArrowRight, Building2, Coins, Shield, Users, Zap, Globe, Search, ShoppingCart, TrendingUp, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { BackgroundVideo } from '@/components/background/BackgroundVideo';
 import { ParticleTextBackground } from '@/components/background/ParticleTextBackground';
 import { WhyChooseBackgroundVideo } from '@/components/background/WhyChooseBackgroundVideo';
-import { ReadyInvestBackgroundVideo } from '@/components/background/ReadyInvestBackgroundVideo';
+import { SharedBackgroundVideo } from '@/components/background/SharedBackgroundVideo';
 import { ParticleText3D } from '@/components/text/ParticleText3D';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register GSAP ScrollTrigger plugin
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const features = [
   {
@@ -47,6 +56,33 @@ const stats = [
   { value: '2,847', label: 'Properties Listed' },
   { value: '15,200+', label: 'Active Users' },
   { value: '99.9%', label: 'Uptime' },
+];
+
+const howItWorksSteps = [
+  {
+    number: '01',
+    icon: Search,
+    title: 'Browse Properties',
+    description: 'Explore our curated collection of tokenized real estate properties in the metaverse.',
+  },
+  {
+    number: '02',
+    icon: ShoppingCart,
+    title: 'Purchase Tokens',
+    description: 'Buy fractional ownership tokens using cryptocurrency with secure blockchain transactions.',
+  },
+  {
+    number: '03',
+    icon: TrendingUp,
+    title: 'Earn Returns',
+    description: 'Receive passive income and capital appreciation as property values increase over time.',
+  },
+  {
+    number: '04',
+    icon: RefreshCw,
+    title: 'Trade Anytime',
+    description: 'Liquidate your tokens instantly on our marketplace whenever you want to exit.',
+  },
 ];
 
 const Index = () => {
@@ -234,26 +270,218 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Background Video for CTA Section */}
-        <ReadyInvestBackgroundVideo />
+      {/* Shared Video Background Wrapper - Spans both sections */}
+      <div className="relative">
+        {/* Single shared video instance - spans both sections */}
+        <div className="absolute inset-0 w-full">
+          <SharedBackgroundVideo />
+        </div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        {/* Strong dark overlay for both sections */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/85 to-background/90 z-[1] pointer-events-none" />
+
+        {/* How It Works Section */}
+        <HowItWorksSection />
+
+        {/* CTA Section */}
+        <CTASection />
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+// Step Card Component with GSAP hover animation
+interface StepCardProps {
+  step: typeof howItWorksSteps[0];
+}
+
+const StepCard = ({ step }: StepCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const Icon = step.icon;
+
+  // GSAP hover animation
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleMouseEnter = () => {
+      gsap.to(card, {
+        y: -8,
+        scale: 1.02,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    };
+
+    const handleMouseLeave = () => {
+      gsap.to(card, {
+        y: 0,
+        scale: 1,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    };
+
+    card.addEventListener('mouseenter', handleMouseEnter);
+    card.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      card.removeEventListener('mouseenter', handleMouseEnter);
+      card.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className="glass-card p-6 relative overflow-hidden group cursor-pointer"
+      style={{
+        background: 'rgba(10, 10, 20, 0.7)',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+      }}
+    >
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Step Number */}
+        <div className="mb-4">
+          <span className="text-5xl font-display font-bold text-primary/20">
+            {step.number}
+          </span>
+        </div>
+
+        {/* Icon */}
+        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors duration-300">
+          <Icon className="w-7 h-7 text-primary" />
+        </div>
+
+                  {/* Title */}
+                  <h3 
+                    className="font-display text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors duration-300"
+                    style={{
+                      textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
+                    }}
+                  >
+                    {step.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p 
+                    className="text-muted-foreground text-sm leading-relaxed group-hover:text-foreground/80 transition-colors duration-300"
+                    style={{
+                      textShadow: '0 1px 4px rgba(0, 0, 0, 0.6)',
+                    }}
+                  >
+                    {step.description}
+                  </p>
+      </div>
+    </div>
+  );
+};
+
+// CTA Section Component with GSAP animations
+const CTASection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current || !contentRef.current) return;
+
+    // Check if ScrollTrigger is available
+    if (typeof ScrollTrigger !== 'undefined') {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 75%',
+          end: 'bottom 25%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Set initial state
+      gsap.set(contentRef.current, {
+        opacity: 0,
+        y: 40,
+      });
+
+      // Animate content
+      tl.to(contentRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+      });
+
+      return () => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
+    } else {
+      // Fallback: Use Intersection Observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && contentRef.current) {
+              gsap.to(contentRef.current, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out',
+              });
+              observer.disconnect();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      if (contentRef.current) {
+        gsap.set(contentRef.current, {
+          opacity: 0,
+          y: 40,
+        });
+      }
+
+      observer.observe(sectionRef.current);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="py-24 relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-[2]">
+        <div ref={contentRef}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
             whileHover={{ 
               scale: 1.02,
               transition: { duration: 0.4, ease: "easeOut" }
             }}
             className="glass-card-glow p-12 text-center max-w-4xl mx-auto cursor-pointer hover:shadow-2xl hover:shadow-primary/30 transition-shadow duration-500"
+            style={{
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
+            }}
           >
-            <h2 className="font-display text-4xl font-bold mb-4 text-foreground">
+            <h2 
+              className="font-display text-4xl font-bold mb-4 text-foreground"
+              style={{
+                textShadow: '0 2px 12px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.3)',
+              }}
+            >
               Ready to Invest in  Digital Future?
             </h2>
-            <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
+            <p 
+              className="text-muted-foreground mb-8 max-w-xl mx-auto"
+              style={{
+                textShadow: '0 1px 4px rgba(0, 0, 0, 0.6)',
+              }}
+            >
               Connect your wallet and start exploring premium virtual real estate opportunities today.
             </p>
             <Link to="/metaverse">
@@ -275,17 +503,119 @@ const Index = () => {
             </Link>
           </motion.div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+};
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground text-sm">
-            © 2025 RealityOneX.  -  Decentralized Metaverse Real Estate Platform
+// How It Works Section Component with GSAP animations
+const HowItWorksSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!cardsRef.current || !sectionRef.current) return;
+
+    const cards = Array.from(cardsRef.current.children);
+
+    // Set initial state
+    gsap.set(cards, {
+      opacity: 0,
+      y: 60,
+    });
+
+    // Check if ScrollTrigger is available
+    if (typeof ScrollTrigger !== 'undefined') {
+      // Create scroll trigger animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 75%',
+          end: 'bottom 25%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Stagger animation for cards
+      tl.to(cards, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out',
+      });
+
+      return () => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
+    } else {
+      // Fallback: Use Intersection Observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              gsap.to(cards, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: 'power3.out',
+              });
+              observer.disconnect();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      observer.observe(sectionRef.current);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="py-24 relative overflow-hidden">
+      {/* Content - Video is handled by parent wrapper */}
+      <div className="container mx-auto px-4 relative z-[2]">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 
+            className="font-display text-4xl font-bold mb-4"
+            style={{
+              textShadow: '0 2px 12px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            <span className="gradient-text-primary">How It</span>{' '}
+            <span className="text-foreground">Works</span>
+          </h2>
+          <p 
+            className="text-muted-foreground max-w-2xl mx-auto"
+            style={{
+              textShadow: '0 1px 4px rgba(0, 0, 0, 0.6)',
+            }}
+          >
+            Get started with tokenized real estate in four simple steps. 
+            Own, earn, and trade property tokens seamlessly.
           </p>
+        </motion.div>
+
+        {/* Steps Grid */}
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {howItWorksSteps.map((step) => (
+            <StepCard key={step.number} step={step} />
+          ))}
         </div>
-      </footer>
-    </div>
+      </div>
+    </section>
   );
 };
 

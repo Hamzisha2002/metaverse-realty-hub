@@ -4,7 +4,7 @@ import * as THREE from 'three';
 /**
  * ParticleHeroText Component (Simplified Version)
  * 
- * Renders "REALTYONEX" as an interactive 3D particle system using Three.js.
+ * Renders "REALITYONEX" as an interactive 3D particle system using Three.js.
  * 
  * TEMPORARY: Using PointsMaterial instead of custom shaders for stability testing.
  * Custom shaders disabled until basic particle system is confirmed working.
@@ -133,7 +133,7 @@ export const ParticleHeroText = () => {
 
     // Create particle text
     const createParticleText = () => {
-      const text = 'REALTYONEX';
+      const text = 'REALITYONEX';
       const maxParticles = 600;
       const { positions, count } = sampleTextToParticles(text, maxParticles);
 

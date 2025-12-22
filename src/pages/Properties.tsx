@@ -1,25 +1,75 @@
 import { motion } from 'framer-motion';
 import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { useMetaverseStore } from '@/store/metaverseStore';
-import { MapPin, TrendingUp, Users } from 'lucide-react';
+import { MapPin, TrendingUp, Users, Coins, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 
 const Properties = () => {
   const { properties, selectProperty } = useMetaverseStore();
 
-  const buildingTypeColors: Record<string, string> = {
-    residential: 'bg-secondary/20 text-secondary border-secondary/30',
-    commercial: 'bg-primary/20 text-primary border-primary/30',
-    mixed: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    landmark: 'bg-accent/20 text-accent border-accent/30',
-    plot: 'bg-green-500/20 text-green-400 border-green-500/30',
+  // Get property image URL based on property type and area
+  const getPropertyImage = (property: typeof properties[0]) => {
+    // Use Unsplash API with property-specific keywords for realistic images
+    const imageMap: Record<string, string> = {
+      'dha-001': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop',
+      'dha-002': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
+      'dha-003': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop',
+      'clifton-001': 'https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop',
+      'clifton-002': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop',
+      'clifton-003': 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop',
+      'clifton-004': 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&h=600&fit=crop',
+      'bahria-001': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
+      'bahria-002': 'https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop',
+      'bahria-003': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop',
+      'bahria-004': 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop',
+      'gulshan-001': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop',
+      'gulshan-002': 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&h=600&fit=crop',
+      'gulshan-003': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
+      'gulshan-004': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop',
+      'pechs-001': 'https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop',
+      'pechs-002': 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop',
+      'pechs-003': 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&h=600&fit=crop',
+      'scheme33-001': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
+      'scheme33-002': 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop',
+      'scheme33-003': 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop',
+      'scheme33-004': 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop',
+    };
+
+    // Return mapped image or fallback based on property type
+    if (imageMap[property.id]) {
+      return imageMap[property.id];
+    }
+
+    // Fallback: Use property type to generate appropriate image
+    const typeMap: Record<string, string> = {
+      residential: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop',
+      commercial: 'https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop',
+      plot: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
+    };
+
+    return typeMap[property.buildingType] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop';
   };
 
-  const statusColors: Record<string, string> = {
-    Available: 'bg-green-500/20 text-green-400 border-green-500/30',
-    Sold: 'bg-red-500/20 text-red-400 border-red-500/30',
-    Reserved: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+  // Mock data for tokenization
+  const getTokenPrice = (property: typeof properties[0]) => {
+    return (property.price / property.totalShares).toFixed(0);
+  };
+
+  const getTokenizationProgress = (property: typeof properties[0]) => {
+    return (property.fractionalShares / property.totalShares) * 100;
+  };
+
+  const getInvestorsCount = (property: typeof properties[0]) => {
+    // Mock: random investor count based on shares
+    return Math.floor(property.fractionalShares / 10) + Math.floor(Math.random() * 50);
+  };
+
+  const getGrowthPercentage = () => {
+    // Mock: random growth between 5-25%
+    return (Math.random() * 20 + 5).toFixed(1);
   };
 
   return (
@@ -33,12 +83,12 @@ const Properties = () => {
           className="mb-12"
         >
           <h1 className="font-display text-4xl font-bold mb-4">
-            <span className="gradient-text-primary">Karachi</span>{' '}
-            <span className="text-foreground">Properties</span>
+            <span className="gradient-text-primary">Tokenized</span>{' '}
+            <span className="text-foreground">Real Estate</span>
           </h1>
           <p className="text-muted-foreground max-w-2xl">
-            Browse and invest in premium  real estate. Each property is tokenized 
-            on the blockchain with full ownership rights.
+            Invest in premium Karachi properties through blockchain tokens. Own fractional shares 
+            and earn returns from real estate appreciation.
           </p>
         </motion.div>
 
@@ -62,88 +112,155 @@ const Properties = () => {
 
         {/* Property grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map((property, index) => (
-            <motion.div
-              key={property.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
-              className="glass-card overflow-hidden group"
-            >
-              {/* Property preview */}
-              <div 
-                className="h-48 relative overflow-hidden"
-                style={{ 
-                  background: `linear-gradient(135deg, ${property.color}20, ${property.color}40)` 
-                }}
+          {properties.map((property, index) => {
+            const tokenPrice = getTokenPrice(property);
+            const progress = getTokenizationProgress(property);
+            const investorsCount = getInvestorsCount(property);
+            const growthPercent = getGrowthPercentage();
+
+            return (
+              <motion.div
+                key={property.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+                className="glass-card overflow-hidden group cursor-pointer"
+                onClick={() => selectProperty(property)}
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div
-                    className="w-20 h-32 rounded-lg shadow-2xl transform group-hover:scale-110 transition-transform duration-500"
-                    style={{ backgroundColor: property.color }}
+                {/* Property Image */}
+                <div 
+                  className="h-56 relative overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40"
+                >
+                  {/* Property Image */}
+                  <img
+                    src={getPropertyImage(property)}
+                    alt={property.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
+                    onError={(e) => {
+                      // Fallback to gradient if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.style.background = `linear-gradient(135deg, ${property.color}30, ${property.color}60)`;
+                    }}
                   />
+                  
+                  {/* Gradient overlay for better badge visibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent pointer-events-none" />
+                  
+                  {/* Badges */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge className="bg-background/90 backdrop-blur-sm text-foreground border-border shadow-lg">
+                      {property.buildingType}
+                    </Badge>
+                  </div>
+                  <div className="absolute top-4 left-4 z-10">
+                    <Badge 
+                      className={
+                        property.status === 'Available' 
+                          ? 'bg-green-500/90 text-green-50 border-green-500/50 shadow-lg'
+                          : property.status === 'Sold'
+                          ? 'bg-red-500/90 text-red-50 border-red-500/50 shadow-lg'
+                          : 'bg-yellow-500/90 text-yellow-50 border-yellow-500/50 shadow-lg'
+                      }
+                    >
+                      {property.status}
+                    </Badge>
+                  </div>
                 </div>
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <Badge className={buildingTypeColors[property.buildingType]}>
-                    {property.buildingType}
-                  </Badge>
-                </div>
-                <div className="absolute top-4 left-4">
-                  <Badge className={statusColors[property.status]}>
-                    {property.status}
-                  </Badge>
-                </div>
-              </div>
 
-              {/* Property info */}
-              <div className="p-6">
-                <h3 className="font-display text-xl text-foreground mb-2">{property.name}</h3>
-                <div className="flex items-center gap-2 text-muted-foreground text-sm mb-4">
-                  <MapPin className="w-4 h-4" />
-                  <span>{property.location}</span>
-                </div>
+                {/* Property Info */}
+                <div className="p-6">
+                  {/* Property Name + Location */}
+                  <h3 className="font-display text-xl text-foreground mb-1 group-hover:text-primary transition-colors">
+                    {property.name}
+                  </h3>
+                  <div className="flex items-center gap-2 text-muted-foreground text-sm mb-4">
+                    <MapPin className="w-4 h-4" />
+                    <span>{property.location}</span>
+                  </div>
 
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                  {property.description}
-                </p>
-
-                <div className="flex items-center justify-between mb-4">
-                  <div>
+                  {/* Property Value */}
+                  <div className="mb-4 pb-4 border-b border-border/50">
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-xs text-muted-foreground">Property Value</span>
+                    </div>
                     <span className="font-display text-2xl gradient-text-gold">
                       {property.priceInPKR}
                     </span>
-                    <p className="text-xs text-muted-foreground">
-                      {property.priceInSol} SOL
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {property.priceInSol.toLocaleString()} SOL
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 text-secondary">
-                      <Users className="w-4 h-4" />
-                      <span className="text-sm font-medium">
-                        {property.fractionalShares}/{property.totalShares}
+
+                  {/* Token Price */}
+                  <div className="mb-4 pb-4 border-b border-border/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Coins className="w-4 h-4 text-primary" />
+                        <span className="text-sm text-muted-foreground">Token Price</span>
+                      </div>
+                      <span className="font-display text-lg text-primary font-semibold">
+                        PKR {parseInt(tokenPrice).toLocaleString()}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground">shares sold</p>
                   </div>
-                </div>
 
-                <div className="flex gap-2">
+                  {/* Tokenization Progress */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-muted-foreground">Tokenization Progress</span>
+                      <span className="text-xs font-medium text-foreground">
+                        {progress.toFixed(1)}%
+                      </span>
+                    </div>
+                    <Progress value={progress} className="h-2" />
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-xs text-muted-foreground">
+                        {property.fractionalShares} / {property.totalShares} tokens
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Investors + Growth */}
+                  <div className="flex items-center justify-between mb-4 pb-4 border-b border-border/50">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-secondary" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{investorsCount}</p>
+                        <p className="text-xs text-muted-foreground">Investors</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-1 text-green-400">
+                        <TrendingUp className="w-4 h-4" />
+                        <span className="text-sm font-semibold">+{growthPercent}%</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Growth</p>
+                    </div>
+                  </div>
+
+                  {/* Invest Now Button */}
                   <Button
                     variant="glow"
-                    className="flex-1"
-                    onClick={() => selectProperty(property)}
+                    className="w-full group/btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      selectProperty(property);
+                    }}
                   >
-                    View Details
-                  </Button>
-                  <Button variant="outline" size="icon">
-                    <TrendingUp className="w-4 h-4" />
+                    Invest Now
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

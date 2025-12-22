@@ -26,3 +26,6 @@ metaverse-realty-hub-/
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+.env*.local

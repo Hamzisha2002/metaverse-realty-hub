@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, Suspense } from 'react';
 import { useFrame, ThreeEvent } from '@react-three/fiber';
 import { Text, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -281,41 +281,42 @@ export const Building = ({ property }: BuildingProps) => {
       </group>
 
       {/* Floating label with area name, price, and status */}
-      <group position={[0, property.size.height / 2 + 2, 0]}>
-        {/* Area Name */}
-        <Text
-          position={[0, 1.2, 0]}
-          fontSize={0.7}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="bottom"
-          font="/fonts/inter-bold.woff"
-        >
-          {property.areaName}
-        </Text>
-        
-        {/* Price in PKR */}
-        <Text
-          position={[0, 0.4, 0]}
-          fontSize={0.55}
-          color="#d4af37"
-          anchorX="center"
-          anchorY="bottom"
-        >
-          PKR {property.priceInPKR}
-        </Text>
-        
-        {/* Status */}
-        <Text
-          position={[0, -0.3, 0]}
-          fontSize={0.45}
-          color={getStatusColor()}
-          anchorX="center"
-          anchorY="bottom"
-        >
-          {property.status}
-        </Text>
-      </group>
+      <Suspense fallback={null}>
+        <group position={[0, property.size.height / 2 + 2, 0]}>
+          {/* Area Name */}
+          <Text
+            position={[0, 1.2, 0]}
+            fontSize={0.7}
+            color="#ffffff"
+            anchorX="center"
+            anchorY="bottom"
+          >
+            {property.areaName}
+          </Text>
+          
+          {/* Price in PKR */}
+          <Text
+            position={[0, 0.4, 0]}
+            fontSize={0.55}
+            color="#d4af37"
+            anchorX="center"
+            anchorY="bottom"
+          >
+            PKR {property.priceInPKR}
+          </Text>
+          
+          {/* Status */}
+          <Text
+            position={[0, -0.3, 0]}
+            fontSize={0.45}
+            color={getStatusColor()}
+            anchorX="center"
+            anchorY="bottom"
+          >
+            {property.status}
+          </Text>
+        </group>
+      </Suspense>
 
       {/* Property info card on hover */}
       {hovered && (

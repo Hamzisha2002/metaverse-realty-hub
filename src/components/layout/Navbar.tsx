@@ -1,11 +1,9 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, LayoutDashboard, Map, Building2, LogIn } from 'lucide-react';
 import { WalletConnect } from '@/components/wallet/WalletConnect';
 import { useAuthStore } from '@/store/authStore';
-import { LoginModal } from '@/components/auth/LoginModal';
 import { UserMenu } from '@/components/auth/UserMenu';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
@@ -17,8 +15,8 @@ const navItems = [
 
 export const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   return (
     <>
@@ -40,7 +38,7 @@ export const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
                 RealityOneX
               </span>
               <span className="text-xs text-muted-foreground -mt-1">
-                 Metaverse Real Estate
+                 Next Gen Ownership.
               </span>
             </div>
           </Link>
@@ -83,7 +81,7 @@ export const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
             ) : (
               <Button
                 variant="neon"
-                onClick={() => setIsLoginModalOpen(true)}
+                onClick={() => navigate('/auth')}
                 className="gap-2"
               >
                 <LogIn className="w-4 h-4" />
@@ -93,8 +91,6 @@ export const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
           </div>
         </div>
       </motion.header>
-
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </>
   );
 };

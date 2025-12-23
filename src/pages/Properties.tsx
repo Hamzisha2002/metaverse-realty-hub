@@ -2,13 +2,24 @@ import { motion } from 'framer-motion';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { useMetaverseStore } from '@/store/metaverseStore';
-import { MapPin, TrendingUp, Users, Coins, ArrowRight } from 'lucide-react';
+import { MapPin, TrendingUp, Users, Coins, ArrowRight, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register GSAP ScrollTrigger plugin
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const Properties = () => {
   const { properties, selectProperty } = useMetaverseStore();
+  const headerRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   // Get property image URL based on property type and area
   const getPropertyImage = (property: typeof properties[0]) => {
@@ -72,16 +83,105 @@ const Properties = () => {
     return (Math.random() * 20 + 5).toFixed(1);
   };
 
+  useEffect(() => {
+    if (!headerRef.current || !filtersRef.current || !gridRef.current) return;
+
+    const cards = Array.from(gridRef.current.children);
+
+    // Set initial states
+    gsap.set(headerRef.current, { opacity: 0, y: 30 });
+    gsap.set(filtersRef.current, { opacity: 0, y: 20 });
+    gsap.set(cards, { opacity: 0, y: 40, scale: 0.95 });
+
+    // Check if ScrollTrigger is available
+    if (typeof ScrollTrigger !== 'undefined') {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+          once: true,
+          refreshPriority: -1,
+        },
+      });
+
+      // Animate header (optimized)
+      tl.to(headerRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        force3D: true,
+      })
+      // Animate filters (optimized)
+      .to(filtersRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        force3D: true,
+      }, '-=0.3')
+      // Stagger cards (optimized)
+      .to(cards, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.4,
+        stagger: 0.06,
+        ease: 'power2.out',
+        force3D: true,
+      }, '-=0.2');
+
+      return () => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
+    } else {
+      // Fallback: Use Intersection Observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              gsap.to(headerRef.current, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out',
+              });
+              gsap.to(filtersRef.current, {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: 'power2.out',
+              });
+              gsap.to(cards, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.5,
+                stagger: 0.08,
+                ease: 'power2.out',
+              });
+              observer.disconnect();
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(headerRef.current!);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, [properties]);
+
   return (
     <div className="min-h-screen bg-background grid-pattern">
       <Navbar />
       
       <main className="container mx-auto px-4 pt-24 pb-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
+        <div ref={headerRef} className="mb-12">
           <h1 className="font-display text-4xl font-bold mb-4">
             <span className="gradient-text-primary">Tokenized</span>{' '}
             <span className="text-foreground">Real Estate</span>
@@ -90,15 +190,10 @@ const Properties = () => {
             Invest in premium Karachi properties through blockchain tokens. Own fractional shares 
             and earn returns from real estate appreciation.
           </p>
-        </motion.div>
+        </div>
 
         {/* Filter tabs */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-wrap gap-2 mb-8"
-        >
+        <div ref={filtersRef} className="flex flex-wrap gap-2 mb-8">
           {['All', 'Residential', 'Commercial', 'Plot', 'Available', 'Sold'].map((filter) => (
             <Button
               key={filter}
@@ -108,10 +203,10 @@ const Properties = () => {
               {filter}
             </Button>
           ))}
-        </motion.div>
+        </div>
 
         {/* Property grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {properties.map((property, index) => {
             const tokenPrice = getTokenPrice(property);
             const progress = getTokenizationProgress(property);
@@ -121,9 +216,6 @@ const Properties = () => {
             return (
               <motion.div
                 key={property.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index }}
                 whileHover={{ y: -5, transition: { duration: 0.3 } }}
                 className="glass-card overflow-hidden group cursor-pointer"
                 onClick={() => selectProperty(property)}
@@ -241,18 +333,31 @@ const Properties = () => {
                     </div>
                   </div>
 
-                  {/* Invest Now Button */}
-                  <Button
-                    variant="glow"
-                    className="w-full group/btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      selectProperty(property);
-                    }}
-                  >
-                    Invest Now
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button
+                      variant="glow"
+                      className="flex-1 group/btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        selectProperty(property);
+                      }}
+                    >
+                      Invest Now
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1 group/btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.location.href = `/metaverse/${property.id}`;
+                      }}
+                    >
+                      <Globe className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
+                      3D View
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
             );

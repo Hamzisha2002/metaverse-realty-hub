@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import Metaverse from "./pages/Metaverse";
 import Properties from "./pages/Properties";
 import Dashboard from "./pages/Dashboard";
+import Property3DViewer from "./pages/Property3DViewer";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { PropertyModal } from "./components/property/PropertyModal";
 
@@ -20,7 +22,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/metaverse" element={<Metaverse />} />
+          <Route path="/metaverse/:propertyId" element={<Property3DViewer />} />
           <Route path="/properties" element={<Properties />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<NotFound />} />

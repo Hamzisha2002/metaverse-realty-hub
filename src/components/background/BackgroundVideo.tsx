@@ -10,12 +10,37 @@ export const BackgroundVideo = () => {
     const container = containerRef.current;
     if (!video || !container) return;
 
-    // Smooth loop: restart instantly when video ends
+    let isSeeking = false;
+
+    // Seamless loop: restart before video ends to prevent visible jump (throttled)
+    let lastCheck = 0;
+    const handleTimeUpdate = () => {
+      if (isSeeking) return;
+      
+      // Throttle checks to reduce CPU usage (check every 100ms instead of every frame)
+      const now = Date.now();
+      if (now - lastCheck < 100) return;
+      lastCheck = now;
+      
+      // If video is within 0.1 seconds of the end, seamlessly restart
+      if (video.duration && video.currentTime >= video.duration - 0.1) {
+        isSeeking = true;
+        video.currentTime = 0;
+        // Small delay to ensure smooth transition
+        setTimeout(() => {
+          isSeeking = false;
+        }, 50);
+      }
+    };
+
+    // Fallback: restart instantly when video ends
     const handleEnded = () => {
-      video.currentTime = 0;
-      video.play().catch(() => {
-        // Ignore autoplay errors
-      });
+      if (!isSeeking) {
+        video.currentTime = 0;
+        video.play().catch(() => {
+          // Ignore autoplay errors
+        });
+      }
     };
 
     // Fade-in when metadata is loaded
@@ -42,11 +67,13 @@ export const BackgroundVideo = () => {
       }
     };
 
+    video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('ended', handleEnded);
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
       video.removeEventListener('ended', handleEnded);
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -61,6 +88,9 @@ export const BackgroundVideo = () => {
         opacity: isLoaded ? 1 : 0,
         transition: 'opacity 600ms ease-out',
         animation: isLoaded ? 'videoPulse 14s ease-in-out infinite' : 'none',
+        willChange: 'opacity',
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
       }}
     >
       <style>{`
@@ -78,7 +108,12 @@ export const BackgroundVideo = () => {
         playsInline
         preload="metadata"
         aria-hidden="true"
-        style={{ pointerEvents: 'none' }}
+        style={{ 
+          pointerEvents: 'none',
+          transform: 'translateZ(0)',
+          willChange: 'transform',
+          backfaceVisibility: 'hidden',
+        }}
       >
         <source src="/videos/hero-bg.mp4" type="video/mp4" />
         Your browser does not support the video tag.

@@ -1,19 +1,21 @@
 import { create } from 'zustand';
 
-export type LoginMethod = 'google' | 'email' | 'github' | 'metamask' | 'avatar';
+export type LoginMethod = 'google' | 'email' | 'github' | 'metamask' | 'avatar' | 'discord' | 'apple' | 'twitter';
 
 interface User {
   id: string;
   name: string;
   email?: string;
   avatar?: string;
-  loginMethod: LoginMethod;
+  provider?: LoginMethod;
+  loginMethod?: LoginMethod;
+  walletAddress?: string;
 }
 
 interface AuthStore {
   isAuthenticated: boolean;
   user: User | null;
-  login: (method: LoginMethod, userData?: Partial<User>) => void;
+  login: (userData: User) => void;
   logout: () => void;
 }
 
@@ -21,20 +23,17 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isAuthenticated: false,
   user: null,
 
-  login: (method, userData) => {
-    const defaultUser: User = {
-      id: `user-${Date.now()}`,
-      name: 
-        method === 'google' ? 'Google User' 
-        : method === 'email' ? 'Email User' 
-        : method === 'github' ? 'GitHub User'
-        : method === 'metamask' ? 'MetaMask User' 
-        : 'Metaverse Avatar',
-      email: method === 'email' ? 'user@example.com' : method === 'github' ? 'user@github.com' : undefined,
-      loginMethod: method,
-      ...userData,
+  login: (userData) => {
+    const user: User = {
+      id: userData.id || `user-${Date.now()}`,
+      name: userData.name || 'User',
+      email: userData.email,
+      avatar: userData.avatar,
+      provider: userData.provider || userData.loginMethod,
+      loginMethod: userData.provider || userData.loginMethod,
+      walletAddress: userData.walletAddress,
     };
-    set({ isAuthenticated: true, user: defaultUser });
+    set({ isAuthenticated: true, user });
   },
 
   logout: () => {
